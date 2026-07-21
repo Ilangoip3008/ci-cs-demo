@@ -1,0 +1,5 @@
+sonar.projectKey=ci-cd-demo
+sonar.projectName=CI/CD Demo
+sonar.sources=.
+sonar.language=py
+sonar.sourceEncoding=UTF-8
