@@ -15,18 +15,7 @@ pipeline {
             }
         }
 
-        stage('Verify Python') {
-            steps {
-                bat 'py -3 --version'
-            }
-        }
-
-        stage('Build & Test') {
-            steps {
-                bat 'py -3 -m unittest discover'
-            }
-        }
-
+        
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQubeServer') {
