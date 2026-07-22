@@ -15,6 +15,12 @@ pipeline {
             }
         }
 
+        stage('Verify Python') {
+            steps {
+                bat 'python --version'
+            }
+        }
+
         stage('Build & Test') {
             steps {
                 bat 'python -m unittest discover'
