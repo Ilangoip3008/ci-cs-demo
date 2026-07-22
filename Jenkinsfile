@@ -17,20 +17,19 @@ pipeline {
 
         stage('Verify Python') {
             steps {
-                bat '"C:\\Users\\acer\\AppData\\Local\\Programs\\Python\\Launcher\\py.exe" --version'
+                bat 'py -3 --version'
             }
         }
 
         stage('Build & Test') {
             steps {
-                bat '"C:\\Users\\acer\\AppData\\Local\\Programs\\Python\\Launcher\\py.exe" -3 -m unittest discover'
+                bat 'py -3 -m unittest discover'
             }
         }
 
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQubeServer') {
-                    bat '"C:\\Users\\acer\\AppData\\Local\\Programs\\Python\\Launcher\\py.exe" -3 -m pip install sonar-scanner'
                     bat 'sonar-scanner'
                 }
             }
