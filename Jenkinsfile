@@ -6,14 +6,14 @@ pipeline {
         SONARQUBE = 'SonarQubeServer'
     }
 
-    stage('Checkout') {
-    steps {
-        git branch: 'main',
-            url: 'https://github.com/Ilangoip3008/ci-cd-demo.git',
-            credentialsId: 'github-creds1'
-    }
-}
-
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/Ilangoip3008/ci-cd-demo.git',
+                    credentialsId: 'github-creds1'
+            }
+        }
 
         stage('Build & Test') {
             steps {
