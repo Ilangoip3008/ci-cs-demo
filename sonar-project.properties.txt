@@ -3,4 +3,4 @@ sonar.projectName=CI/CD Demo
 sonar.projectVersion=1.0
 sonar.sources=.
 sonar.host.url=http://localhost:9000
-sonar.token=squ_e4482935a68044790c91a2e7aa87b025ed178424
+sonar.token=squ_63a2b2ff6b3c68c2dfb0ee4fb18d07ae08bef8a4
