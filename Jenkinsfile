@@ -34,10 +34,11 @@ pipeline {
     steps {
         withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
             bat "echo %PASS% | docker login -u %USER% --password-stdin"
-            bat "docker push ilangoip3008/ci-cs-demo:%BUILD_NUMBER%"
+            bat "docker push %USER%/ci-cs-demo:%BUILD_NUMBER%"
         }
     }
 }
+
 
 
         stage('Deploy') {
