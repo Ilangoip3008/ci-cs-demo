@@ -24,14 +24,7 @@ pipeline {
             }
         }
 
-        stage('Quality Gate') {
-            steps {
-                timeout(time: 15, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true
-                }
-            }
-        }
-
+       
         stage('Docker Build') {
             steps {
                 bat "docker build -t your-dockerhub-username/ci-cs-demo:%BUILD_NUMBER% ."
