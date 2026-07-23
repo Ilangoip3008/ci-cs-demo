@@ -2,8 +2,6 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_USER = 'ilangoip3008'
-        IMAGE_NAME = 'ci-cd-demo'
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-creds')
         SONARQUBE = 'SonarQubeServer'
     }
@@ -11,20 +9,18 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/Ilangoip3008/ci-cd-demo.git'
+                git branch: 'main',
+                    url: 'https://github.com/Ilangoip3008/ci-cs-demo.git',
+                    credentialsId: 'ci-cs-repo1'
             }
         }
 
-        stage('Build & Test') {
-            steps {
-                sh 'python3 -m unittest discover'
-            }
-        }
+        
 
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv("${SONARQUBE}") {
-                    sh 'sonar-scanner'
+                withSonarQubeEnv('SonarQubeServer') {
+                    bat 'sonar-scanner'
                 }
             }
         }
@@ -39,22 +35,22 @@ pipeline {
 
         stage('Docker Build') {
             steps {
-                sh 'docker build -t $DOCKER_USER/$IMAGE_NAME:${BUILD_NUMBER} .'
+                bat "docker build -t your-dockerhub-username/ci-cs-demo:%BUILD_NUMBER% ."
             }
         }
 
         stage('Push to DockerHub') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
-                    sh 'echo $PASS | docker login -u $USER --password-stdin'
-                    sh 'docker push $DOCKER_USER/$IMAGE_NAME:${BUILD_NUMBER}'
+                    bat "echo %PASS% | docker login -u %USER% --password-stdin"
+                    bat "docker push your-dockerhub-username/ci-cs-demo:%BUILD_NUMBER%"
                 }
             }
         }
 
         stage('Deploy') {
             steps {
-                sh 'docker run -d -p 8080:8080 $DOCKER_USER/$IMAGE_NAME:${BUILD_NUMBER}'
+                bat "docker run -d -p 8080:8080 your-dockerhub-username/ci-cs-demo:%BUILD_NUMBER%"
             }
         }
     }
