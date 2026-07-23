@@ -2,7 +2,8 @@ pipeline {
     agent any
 
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub-creds')
+        DOCKER_USER = 'ilangoip3008'
+        IMAGE_NAME = 'ci-cs-demo'
         SONARQUBE = 'SonarQubeServer'
     }
 
@@ -15,38 +16,32 @@ pipeline {
             }
         }
 
-        
-
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('SonarQubeServer') {
+                withSonarQubeEnv("${SONARQUBE}") {
                     bat 'sonar-scanner'
                 }
             }
         }
 
-        
-
         stage('Docker Build') {
             steps {
-                bat "docker build -t your-dockerhub-username/ci-cs-demo:%BUILD_NUMBER% ."
+                bat "docker build -t ${DOCKER_USER}/${IMAGE_NAME}:${BUILD_NUMBER} ."
             }
         }
 
         stage('Push to DockerHub') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
-    sh 'echo $PASS | docker login -u $USER --password-stdin'
-    sh 'docker push ilangoip3008/ci-cd-demo:${BUILD_NUMBER}'
-}
-
+                    sh 'echo $PASS | docker login -u $USER --password-stdin'
+                    sh "docker push ${DOCKER_USER}/${IMAGE_NAME}:${BUILD_NUMBER}"
                 }
             }
         }
 
         stage('Deploy') {
             steps {
-                bat "docker run -d -p 8080:8080 your-dockerhub-username/ci-cs-demo:%BUILD_NUMBER%"
+                bat "docker run -d -p 8080:8080 ${DOCKER_USER}/${IMAGE_NAME}:${BUILD_NUMBER}"
             }
         }
     }
