@@ -30,14 +30,15 @@ pipeline {
             }
         }
 
-        stage('Push to DockerHub') {
+       stage('Push to DockerHub') {
     steps {
-        withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
-            bat "docker login -u %USER% -p %PASS%"
-            bat "docker push %USER%/%IMAGE_NAME%:%BUILD_NUMBER%"
+        withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'PASS')]) {
+            bat "docker login -u %DOCKER_USER% -p %PASS%"
+            bat "docker push %DOCKER_USER%/%IMAGE_NAME%:%BUILD_NUMBER%"
         }
     }
 }
+
 
         stage('Deploy') {
             steps {
