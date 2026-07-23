@@ -30,21 +30,20 @@ pipeline {
             }
         }
 
-       stage('Push to DockerHub') {
-    steps {
-        withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'PASS')]) {
-            bat "docker login -u %DOCKER_USER% -p %PASS%"
-            bat "docker push %DOCKER_USER%/%IMAGE_NAME%:%BUILD_NUMBER%"
+        stage('Push to DockerHub') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'PASS')]) {
+                    bat "docker login -u %DOCKER_USER% -p %PASS%"
+                    bat "docker push %DOCKER_USER%/%IMAGE_NAME%:%BUILD_NUMBER%"
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                bat "docker rm -f ci-cs-demo || echo No old container"
+                bat "docker run -d --name ci-cs-demo -p 8081:8080 %DOCKER_USER%/%IMAGE_NAME%:%BUILD_NUMBER%"
+            }
         }
     }
 }
-
-
-stage('Deploy') {
-    steps {
-        bat "docker rm -f ci-cs-demo || echo No old container"
-        bat "docker run -d --name ci-cs-demo -p 8081:8080 %DOCKER_USER%/%IMAGE_NAME%:%BUILD_NUMBER%"
-    }
-}
-
-
