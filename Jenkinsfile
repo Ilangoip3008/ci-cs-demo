@@ -31,13 +31,14 @@ pipeline {
         }
 
         stage('Push to DockerHub') {
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
-                    bat 'echo $PASS | docker login -u $USER --password-stdin'
-                    bat "docker push ${DOCKER_USER}/${IMAGE_NAME}:${BUILD_NUMBER}"
-                }
-            }
+    steps {
+        withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+            bat "echo %PASS% | docker login -u %USER% --password-stdin"
+            bat "docker push ilangoip3008/ci-cs-demo:%BUILD_NUMBER%"
         }
+    }
+}
+
 
         stage('Deploy') {
             steps {
